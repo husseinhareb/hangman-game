@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        .base{
+            background-color:black ;
+            width: 100px;
+            height: 10px;
+            border: 2px solid black;
+            position: absolute;
+            left: 20px;
+            bottom:100px;
+        }
+        .column0{
+            background-color: black;
+            width: 10px;
+            height: 500px;
+            border: 2px solid black;
+            position: absolute;
+            left: 60px;
+            bottom:100px;
+        }
+        .top{
+            background-color: black;
+            width: 200px;
+            height: 10px;
+            border: 2px solid black;
+            position: absolute;
+            top:195px;
+            left:40px
+        }
+        .column1{
+            background-color: black;
+            width: 2px;
+            height: 120px;
+            border: 2px solid black;
+            position: absolute;
+            top:195px;
+            left: 190px;
+
+        }
+        .face{
+            height: 80px;
+            width: 80px;
+            background-color: white;
+            border: 4px solid white;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            left: 150px;
+            top:318px;
+        }
+        .stomach{
+            background-color: white;
+            width: 2px;
+            height: 120px;
+            border: 2px solid white;
+            position: absolute;
+            top:404px;
+            left: 190px;
+        }
+        .hand1{
+            background-color: white;
+            width: 2px;
+            height: 60px;
+            border: 2px solid white;
+            position: absolute;
+            top:440px;
+            left: 173px;
+            transform: rotate(30deg);
+        }
+        .hand2{
+            background-color: white;
+            width: 2px;
+            height: 60px;
+            border: 2px solid white;
+            position: absolute;
+            top:440px;
+            left: 206px;
+            transform: rotate(150deg);
+        }
+        .leg1{
+            background-color: rgb(255, 255, 255);
+            width: 2px;
+            height: 60px;
+            border: 2px solid white;
+            position: absolute;
+            top:520px;
+            left: 173px;
+            transform: rotate(30deg);
+        }
+        .leg2{
+            background-color: white;
+            width: 2px;
+            height: 60px;
+            border: 2px solid white;
+            position: absolute;
+            top:520px;
+            left: 206px;
+            transform: rotate(150deg);
+        }
+        .game{
+            background-color: white;
+            color: black;
+            width: 300px;
+            height: 80px;
+            border: 3px solid black;
+            position: absolute;
+            left:400px;
+            top:260px;
+        }
+        .question{
+            font-size: 32px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: black;
+            position: absolute;
+            left:400px;
+            top:300px;
+            font-weight: bold;
+        }
+        .remaining_guess{
+            font-size: 20px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: red;
+            position: absolute;
+            left: 400px;
+            top:350px;
+        }
+        .answer{
+            font-size: 32px;
+            width: 22px;
+            height: 30px;
+            border-width: 3px;
+            border-color: blue;
+            position: absolute;
+            left:400px;
+            top:400px;
+        }
+        .answer:hover{
+            top:394px;
+            font-size: 40px;
+            width: 30px;
+            height: 40px;
+            transition: 1s;
+        }
+        .restart{
+            font-size: 20px;
+            position: absolute;
+            background-color: rgb(60, 184, 225);
+            left: 460px;
+            top: 399px;
+            height: 40px;
+            width: 100px;
+            border-radius: 10px;
+            border-color: blue;
+        }
+        .restart:hover{
+            box-shadow: 10px 10px 5px 2px lightblue;
+            transition: 1s;
+
+        }
+        .result{
+            font-size: 60px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            position: absolute;
+            left:400px;
+            top:200px;
+            color:crimson;
+        }
+        .history{
+          font-size: 30px;
+          font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+          position: absolute;
+          left:400px;
+          color: blue;
+        }
+        .hint{
+          font-size: 20px;
+            position: absolute;
+            background-color: orange;
+            left: 570px;
+            top: 399px;
+            height: 40px;
+            width: 100px;
+            border-radius: 10px;
+            border-color: orange;
+            animation-duration: 0.5s;
+        }
+        .hint:hover{
+          box-shadow: 10px 10px 5px 2px rgb(244, 176, 50);
+          transition: 1s;
+        }
+
+        .letters{
+          width: 300px;
+          height: 100px;
+          border-radius: 14px;
+          background-color: gray;
+          font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+          color:rgb(60, 255, 0);
+          font-size: 28px;
+          font-weight: 400;
+          letter-spacing: 4px;
+          margin: 12px;
+          padding: 6px
+        }
+
+      
+    </style>
+    <script>
+          
+          function guess() {
+            var dictionary = ["book","car","internet","table","bench","board","whiteboard","chair","t-shirt","venus","mars","earth","saturn","jupiter","uranus","pluto","star","lazy","smart","talent","chocolate","orange","tiger","phone","candy","brick","news","music","gum","gun","facebook"];
+            var random_number = Math.floor(Math.random() * 30);
+            var chosen_word =dictionary[random_number];
+            var underscores = "—".repeat(chosen_word.length);
+            var remaining_guesses = 6;
+            var end_of_game = 0;
+            var history = [];
+            var letters = "a b c d e f g h i j k l m n o p q r s t u v w x y z"
+            document.getElementById("letters").innerHTML = letters
+
+            document.getElementById("question").innerHTML = "Guess the word: " + underscores;
+            document.getElementById("remaining_guess").innerHTML = "Remaining guesses: " + remaining_guesses;
+          
+            document.getElementById("answer").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+              var letter = document.getElementById("answer").value;
+              
+              letter = letter.toLowerCase();
+          
+              if (letter.length !== 1 || end_of_game) {
+                return;
+              }
+            if(history.includes(letter))
+             {
+              document.getElementById("history").innerHTML = letter + " is already used!"
+              remaining_guesses ++;
+             }
+             if(letters.includes(letter))
+             {
+              letters = letters.replace(letter, "  ");
+              document.getElementById("letters").innerHTML = letters
+             }
+             history.push(letter);
+             console.log(history);
+             var found_letter = 0;
+             for (var i = 0; i < chosen_word.length; i++) {
+             if (chosen_word[i] === letter) {
+             underscores = underscores.substr(0, i) + letter + underscores.substr(i+1);
+             found_letter = 1;
+            }
+            }
+           
+
+              if (found_letter==0) {
+                
+                remaining_guesses--;
+                document.getElementById("remaining_guess").innerHTML = "Remaining guesses: " + remaining_guesses;
+
+              }
+
+              document.getElementById("question").innerHTML = "Guess the word: " + underscores;
+              document.getElementById("answer").value = "";
+
+              if (underscores === chosen_word) {
+                document.getElementById("result").innerHTML = "You won :)";
+                document.getElementById("result").style.color = "crimson";
+                end_of_game = 1;
+              } 
+
+              else if (remaining_guesses === 0) {
+                document.getElementById("leg2").style.cssText = "background-color: black; border-color:black;";
+                document.getElementById("result").style.color = "crimson";
+                document.getElementById("result").innerHTML = "You lost :(";
+                end_of_game = 1;
+              }
+
+
+              if(remaining_guesses==5)
+              {
+                document.getElementById("face").style.cssText = "background-color: white; border-color:black ;";
+              }
+              if(remaining_guesses==4)
+              {
+                document.getElementById("stomach").style.cssText = "background-color: black; border-color:black;";
+              }
+              if(remaining_guesses==3)
+              {
+                document.getElementById("hand1").style.cssText = "background-color: black; border-color:black;";
+              }
+              if(remaining_guesses==2)
+              {
+                document.getElementById("hand2").style.cssText = "background-color: black; border-color:black;";
+              }
+              if(remaining_guesses==1)
+              {
+                document.getElementById("leg1").style.cssText = "background-color: black; border-color:black;";
+  
+              }
+
+        }
+        });
+    }
+    function restart()
+    {
+        document.getElementById("face").style.cssText = "background-color: white; border-color:white ;";
+        document.getElementById("stomach").style.cssText = "background-color: white; border-color:white;";
+        document.getElementById("hand1").style.cssText = "background-color: white; border-color:white;";
+        document.getElementById("hand2").style.cssText = "background-color: white; border-color:white;";
+        document.getElementById("leg1").style.cssText = "background-color: white; border-color:white;";
+        document.getElementById("leg2").style.cssText = "background-color: white; border-color:white;";
+        document.getElementById("result").style.color = "white";
+        document.getElementById("history").style.color = "white";
+        guess();
+    }
+      </script>
+</head>
+<body onload="guess()">
+    <div class="base"></div>
+    <div class="column0"></div>
+    <div class="top"></div>
+    <div class="column1"></div>
+    <div class="face" id="face"></div>
+    <div class="stomach" id="stomach"></div>
+    <div class="hand1" id="hand1"></div>
+    <div class="hand2" id="hand2"></div>
+    <div class="leg1" id="leg1"></div>
+    <div class="leg2" id="leg2"></div>
+    <div id="question" class="question"></div>
+    <div id="remaining_guess" class="remaining_guess" ></div>
+    <div id="result" class="result"></div>
+    <div id="history" class="history"></div>
+    <div class="letters" id="letters"></div>
+    <input type="text" class="answer" id="answer" maxlength="1"/>
+    <input type="button" class="restart" value="restart" onclick="restart()">
+    <input type="button" class="hint " value="Hint">
+    
+</body>
+</html>
